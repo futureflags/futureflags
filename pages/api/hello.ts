@@ -1,8 +1,15 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
 import { NextApiRequest, NextApiResponse } from 'next'
+import corsLib from 'cors'
+import { initMiddleware } from './utils'
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+const cors = initMiddleware(
+  corsLib({
+    methods: ['GET', 'POST', 'OPTIONS'],
+  })
+)
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  await cors(req, res)
   res.statusCode = 200
   res.json({ name: 'John Doe' })
 }
