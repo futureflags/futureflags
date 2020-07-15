@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import corsLib from 'cors'
-import { initMiddleware } from './utils'
+import { initMiddleware } from './_utils'
 
 const cors = initMiddleware(
   corsLib({
