@@ -1,5 +1,5 @@
 import { Client, values, query as q } from 'faunadb'
-import { Collections } from '../../schema'
+import { Collections, Indexes } from '../../schema'
 
 export type Doc<T> = {
   ts: number
@@ -37,5 +37,14 @@ export function createUser(
       data: { email },
       credentials: { password },
     })
+  )
+}
+
+export function createSession(
+  { email, password }: { email: string; password: string },
+  client: Client
+) {
+  return client.query<{ secret: string }>(
+    q.Login(q.Match(q.Index(Indexes.userByEmail), email), { password })
   )
 }
