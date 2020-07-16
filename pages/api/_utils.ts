@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import corsLib from 'cors'
 
 export function initMiddleware(middleware: any) {
   return (req: NextApiRequest, res: NextApiResponse) =>
@@ -11,3 +12,9 @@ export function initMiddleware(middleware: any) {
       })
     })
 }
+
+export const cors = initMiddleware(
+  corsLib({
+    methods: ['GET', 'POST', 'OPTIONS'],
+  })
+)

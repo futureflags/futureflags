@@ -1,22 +1,10 @@
 require('dotenv-flow').config()
 
 import { Client, query as q } from 'faunadb'
+import { Collections, Indexes } from '../schema'
 import { IfNotExists } from './utils'
 
-enum Collections {
-  users = 'users',
-  projects = 'projects',
-  features = 'features',
-  pjUsers = 'pj_users',
-  pjUserFeatures = 'pj_user_features',
-}
-
-enum Indexes {
-  userByEmail = 'user_by_email',
-  pjUserByCode = 'pj_user_by_code',
-}
-
-async function setup() {
+export default async function setup() {
   const secret = process.env.FAUNADB_ADMIN_SECRET
 
   if (!secret) {
