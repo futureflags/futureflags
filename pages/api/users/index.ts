@@ -1,7 +1,7 @@
 require('dotenv-flow').config()
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import { connect, createUser, Doc, parseDoc } from '../_db'
+import { connect, createUser, parseDoc } from '../_db'
 import { cors } from '../_utils'
 import * as yup from 'yup'
 
