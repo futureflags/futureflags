@@ -5,11 +5,11 @@ import { createFeature, parseDoc, connect } from '../_db'
 import { controller, cors, HttpError, verifyAuth } from '../_utils'
 import * as yup from 'yup'
 
-type NewProjectData = {
+type NewFeatureData = {
   name: string
 }
 
-const newProjectValidator = yup.object().shape({
+const newFeatureValidator = yup.object().shape({
   name: yup.string().required(),
 })
 
@@ -18,11 +18,11 @@ async function createFeatureEndpoint(
   res: NextApiResponse
 ) {
   const client = connect()
-  const newProjectData = req.body as NewProjectData
+  const newFeatureData = req.body as NewFeatureData
 
   try {
-    await newProjectValidator.validate(newProjectData)
-    const featureDoc = await createFeature(newProjectData, client)
+    await newFeatureValidator.validate(newFeatureData)
+    const featureDoc = await createFeature(newFeatureData, client)
 
     res.status(201).json({
       feature: parseDoc(featureDoc),
