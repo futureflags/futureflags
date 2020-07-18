@@ -1,5 +1,5 @@
 import { Client, values, query as q } from 'faunadb'
-import { Collections, Indexes } from '../../schema'
+import { Collections } from '../../schema'
 
 export type Doc<T> = {
   ts: number
@@ -28,23 +28,8 @@ export function parseDoc<T>(doc: Doc<T>): Model<T> {
   }
 }
 
-export function createUser(
-  { email, password }: { email: string; password: string },
-  client: Client
-) {
-  return client.query<Doc<any>>(
-    q.Create(q.Collection(Collections.users), {
-      data: { email },
-      credentials: { password },
-    })
-  )
-}
-
-export function createSession(
-  { email, password }: { email: string; password: string },
-  client: Client
-) {
-  return client.query<{ secret: string }>(
-    q.Login(q.Match(q.Index(Indexes.userByEmail), email), { password })
+export function createFeature({ name }: { name: string }, client: Client) {
+  return client.query<Doc<{ name: string }>>(
+    q.Create(q.Collection(Collections.features), { data: { name } })
   )
 }

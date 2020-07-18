@@ -48,12 +48,7 @@ export class NextApiResponseMock extends ServerResponse
     return this
   }
 
-  setPreviewData(
-    data: object | string,
-    options?: {
-      maxAge?: number
-    }
-  ) {
+  setPreviewData() {
     return this
   }
 

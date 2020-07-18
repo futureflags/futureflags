@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import corsLib from 'cors'
+import { ApiFunction } from './_types'
 
 export function initMiddleware(middleware: any) {
   return (req: NextApiRequest, res: NextApiResponse) =>
@@ -18,3 +19,50 @@ export const cors = initMiddleware(
     methods: ['GET', 'POST', 'OPTIONS'],
   })
 )
+
+export class HttpError extends Error {
+  public statusCode: number
+
+  constructor(statusCode: number, message?: string) {
+    super(message)
+    this.statusCode = statusCode
+  }
+}
+
+export const verifyJSON = (req: NextApiRequest) => {
+  if (req.headers['content-type'] !== 'application/json') {
+    throw new HttpError(400, 'Only application/json body is accepted')
+  }
+}
+
+export const verifyAuth = (req: NextApiRequest) => {
+  const key = req.headers.authorization
+
+  switch (key) {
+    case process.env.ADMIN_KEY:
+      return
+
+    case undefined:
+      throw new HttpError(401, 'Authorization key not found')
+
+    default:
+      throw new HttpError(401, 'Unauthorized')
+  }
+}
+
+export const controller = (apiFunction: ApiFunction) => async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  try {
+    verifyJSON(req)
+    await apiFunction(req, res)
+  } catch (error) {
+    if (error instanceof HttpError) {
+      res.status(error.statusCode).json({ message: error.message })
+      return
+    }
+
+    throw error
+  }
+}
