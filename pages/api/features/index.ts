@@ -2,7 +2,7 @@ require('dotenv-flow').config()
 
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createFeature, parseDoc, connect } from '../_db'
-import { controller, cors, HttpError, verifyAuth } from '../_utils'
+import { controller, cors, HttpError } from '../_utils'
 import * as yup from 'yup'
 
 type NewFeatureData = {
