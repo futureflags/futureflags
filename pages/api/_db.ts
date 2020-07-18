@@ -1,5 +1,5 @@
 import { Client, values, query as q } from 'faunadb'
-import { Collections } from '../../schema'
+import { Collections, Indexes } from '../../schema'
 
 export type Doc<T> = {
   ts: number
@@ -11,9 +11,14 @@ export type Model<T> = T & {
   id: string
 }
 
-export type NewFeatureData = {
+export type Feature = {
   name: string
-  enabled?: boolean
+  enabled: boolean
+}
+
+export type NewFeatureData = {
+  name: Feature['name']
+  enabled?: Feature['enabled']
 }
 
 export function connect() {
@@ -33,13 +38,25 @@ export function parseDoc<T>(doc: Doc<T>): Model<T> {
   }
 }
 
-export function createFeature(data: NewFeatureData, client: Client) {
-  return client.query<Doc<NewFeatureData>>(
+export function createFeature(
+  data: NewFeatureData,
+  client: Client = connect()
+) {
+  return client.query<Doc<Feature>>(
     q.Create(q.Collection(Collections.features), {
       data: {
         ...data,
         name: data.name.toLowerCase().trim(),
       },
     })
+  )
+}
+
+export function getFeatureByName(
+  name: Feature['name'],
+  client: Client = connect()
+) {
+  return client.query<Doc<Feature>>(
+    q.Get(q.Match(q.Index(Indexes.featureByName), name))
   )
 }

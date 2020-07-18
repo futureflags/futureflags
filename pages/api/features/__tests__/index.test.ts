@@ -1,6 +1,5 @@
-import { callApi } from '../../_testUtils'
+import { callApi, mountFeature } from '../../_testUtils'
 import featuresFunction from '../index'
-import faker from 'faker'
 import { NewFeatureData } from '../../_db'
 
 describe('POST /features', () => {
@@ -45,11 +44,4 @@ async function callFeaturesPost(data: NewFeatureData) {
       authorization: process.env.ADMIN_KEY,
     },
   })
-}
-
-function mountFeature(data: Partial<NewFeatureData> = {}): NewFeatureData {
-  return {
-    name: faker.internet.domainWord(),
-    ...data,
-  }
 }

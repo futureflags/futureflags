@@ -8,6 +8,8 @@ import { ServerResponse } from 'http'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Env } from 'next/dist/lib/load-env-config'
 import { ApiFunction } from './_types'
+import { NewFeatureData } from './_db'
+import faker from 'faker'
 
 export type NextApiRequestOptions = Partial<NextApiRequestMock>
 export class NextApiRequestMock extends IncomingMessage
@@ -69,5 +71,15 @@ export async function callApi(
   return {
     res,
     req,
+  }
+}
+
+export function mountFeature(
+  data: Partial<NewFeatureData> = {}
+): NewFeatureData {
+  return {
+    name: faker.internet.domainWord(),
+    enabled: false,
+    ...data,
   }
 }

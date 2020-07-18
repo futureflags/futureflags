@@ -1,8 +1,8 @@
 require('dotenv-flow').config()
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import { createFeature, parseDoc, connect, NewFeatureData } from '../_db'
-import { controller, cors, HttpError } from '../_utils'
+import { createFeature, parseDoc, NewFeatureData } from '../_db'
+import { controller, cors, NotFound } from '../_utils'
 import * as yup from 'yup'
 
 const onlyEmailCharacters = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/
@@ -16,7 +16,6 @@ async function createFeatureEndpoint(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const client = connect()
   const defaultValues = { enabled: false }
   const newFeatureData: NewFeatureData = {
     ...defaultValues,
@@ -25,7 +24,7 @@ async function createFeatureEndpoint(
 
   try {
     await newFeatureValidator.validate(newFeatureData)
-    const featureDoc = await createFeature(newFeatureData, client)
+    const featureDoc = await createFeature(newFeatureData)
 
     res.status(201).json({
       feature: parseDoc(featureDoc),
@@ -41,6 +40,6 @@ export default controller(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     await createFeatureEndpoint(req, res)
   } else {
-    throw new HttpError(404)
+    throw new NotFound()
   }
 })

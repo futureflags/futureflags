@@ -23,10 +23,20 @@ export const cors = initMiddleware(
 export class HttpError extends Error {
   public statusCode: number
 
-  constructor(statusCode: number, message?: string) {
-    super(message)
+  constructor(statusCode: number, message: string) {
+    super(`${statusCode}: ${message}`)
     this.statusCode = statusCode
   }
+}
+
+export class NotFound extends HttpError {
+  constructor() {
+    super(404, 'Not found')
+  }
+}
+
+export function isHttpError(error: any): error is HttpError {
+  return 'statusCode' in error
 }
 
 export const verifyJSON = (req: NextApiRequest) => {
@@ -58,7 +68,7 @@ export const controller = (apiFunction: ApiFunction) => async (
     verifyJSON(req)
     await apiFunction(req, res)
   } catch (error) {
-    if (error instanceof HttpError) {
+    if (isHttpError(error)) {
       res.status(error.statusCode).json({ message: error.message })
       return
     }
