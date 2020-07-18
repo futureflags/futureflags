@@ -11,6 +11,11 @@ export type Model<T> = T & {
   id: string
 }
 
+export type NewFeatureData = {
+  name: string
+  enabled?: boolean
+}
+
 export function connect() {
   const secret = process.env.FAUNADB_ADMIN_SECRET
 
@@ -28,8 +33,13 @@ export function parseDoc<T>(doc: Doc<T>): Model<T> {
   }
 }
 
-export function createFeature({ name }: { name: string }, client: Client) {
-  return client.query<Doc<{ name: string }>>(
-    q.Create(q.Collection(Collections.features), { data: { name } })
+export function createFeature(data: NewFeatureData, client: Client) {
+  return client.query<Doc<NewFeatureData>>(
+    q.Create(q.Collection(Collections.features), {
+      data: {
+        ...data,
+        name: data.name.toLowerCase().trim(),
+      },
+    })
   )
 }

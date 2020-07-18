@@ -1,16 +1,15 @@
 require('dotenv-flow').config()
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import { createFeature, parseDoc, connect } from '../_db'
+import { createFeature, parseDoc, connect, NewFeatureData } from '../_db'
 import { controller, cors, HttpError } from '../_utils'
 import * as yup from 'yup'
 
-type NewFeatureData = {
-  name: string
-}
+const onlyEmailCharacters = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/
 
 const newFeatureValidator = yup.object().shape({
-  name: yup.string().required(),
+  name: yup.string().matches(onlyEmailCharacters),
+  enabled: yup.bool().required(),
 })
 
 async function createFeatureEndpoint(
@@ -18,7 +17,11 @@ async function createFeatureEndpoint(
   res: NextApiResponse
 ) {
   const client = connect()
-  const newFeatureData = req.body as NewFeatureData
+  const defaultValues = { enabled: false }
+  const newFeatureData: NewFeatureData = {
+    ...defaultValues,
+    ...req.body,
+  }
 
   try {
     await newFeatureValidator.validate(newFeatureData)

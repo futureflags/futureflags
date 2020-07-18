@@ -1,7 +1,7 @@
 require('dotenv-flow').config()
 
 import { Client, query as q } from 'faunadb'
-import { Collections } from '../schema'
+import { Collections, Indexes } from '../schema'
 import { IfNotExists } from './utils'
 
 export default async function setup() {
@@ -22,6 +22,20 @@ export default async function setup() {
       IfNotExists(
         q.Collection(Collections.flags),
         q.CreateCollection({ name: Collections.flags })
+      )
+    )
+  )
+
+  await client.query(
+    q.Do(
+      IfNotExists(
+        q.Index(Indexes.featureByName),
+        q.CreateIndex({
+          name: Indexes.featureByName,
+          source: q.Collection(Collections.features),
+          terms: [{ field: ['data', 'name'] }],
+          unique: true,
+        })
       )
     )
   )
