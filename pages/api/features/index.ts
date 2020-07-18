@@ -1,7 +1,12 @@
 require('dotenv-flow').config()
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import { createFeature, parseDoc, NewFeatureData } from '../_db'
+import {
+  createFeature,
+  parseDoc,
+  NewFeatureData,
+  getAllFeatures,
+} from '../../../db'
 import { controller, cors, NotFound } from '../_utils'
 import * as yup from 'yup'
 
@@ -34,11 +39,21 @@ async function createFeatureEndpoint(
   }
 }
 
+async function getFeaturesEndpoint(_req: NextApiRequest, res: NextApiResponse) {
+  const features = await getAllFeatures()
+
+  res.json({
+    features: features.data.map((featureDoc) => parseDoc(featureDoc)),
+  })
+}
+
 export default controller(async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res)
 
   if (req.method === 'POST') {
     await createFeatureEndpoint(req, res)
+  } else if (req.method === 'GET') {
+    await getFeaturesEndpoint(req, res)
   } else {
     throw new NotFound()
   }

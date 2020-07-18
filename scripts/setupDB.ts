@@ -1,17 +1,12 @@
 require('dotenv-flow').config()
 
-import { Client, query as q } from 'faunadb'
+import { query as q } from 'faunadb'
+import { connect } from '../db'
 import { Collections, Indexes } from '../schema'
 import { IfNotExists } from './utils'
 
 export default async function setup() {
-  const secret = process.env.FAUNADB_ADMIN_SECRET
-
-  if (!secret) {
-    throw new Error('No FAUNADB_ADMIN_SECRET defined.')
-  }
-
-  const client = new Client({ secret })
+  const client = connect()
 
   await client.query(
     q.Do(

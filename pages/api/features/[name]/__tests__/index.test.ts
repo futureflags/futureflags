@@ -1,5 +1,5 @@
 import featuresFunction from '../index'
-import { createFeature, Feature } from '../../../_db'
+import { createFeature, Feature } from '../../../../../db'
 import { callApi, mountFeature } from '../../../_testUtils'
 
 describe('GET /feature/[name]', () => {

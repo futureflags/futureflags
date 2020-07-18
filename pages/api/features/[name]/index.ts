@@ -2,7 +2,7 @@ require('dotenv-flow').config()
 
 import { errors } from 'faunadb'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getFeatureByName, parseDoc } from '../../_db'
+import { getFeatureByName, parseDoc } from '../../../../db'
 import { controller, cors, NotFound } from '../../_utils'
 
 async function getFeatureEndpoint(req: NextApiRequest, res: NextApiResponse) {

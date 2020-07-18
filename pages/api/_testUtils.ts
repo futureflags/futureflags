@@ -8,7 +8,7 @@ import { ServerResponse } from 'http'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Env } from 'next/dist/lib/load-env-config'
 import { ApiFunction } from './_types'
-import { NewFeatureData } from './_db'
+import { NewFeatureData } from '../../db'
 import faker from 'faker'
 
 export type NextApiRequestOptions = Partial<NextApiRequestMock>
