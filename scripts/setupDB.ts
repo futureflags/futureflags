@@ -31,6 +31,57 @@ export default async function setup() {
           terms: [{ field: ['data', 'name'] }],
           unique: true,
         })
+      ),
+      IfNotExists(
+        q.Index(Indexes.flag),
+        q.CreateIndex({
+          name: Indexes.flag,
+          source: q.Collection(Collections.flags),
+          terms: [
+            { field: ['data', 'feature'] },
+            { field: ['data', 'userCode'] },
+          ],
+          unique: true,
+        })
+      ),
+      IfNotExists(
+        q.Index(Indexes.isFeatureEnabledByUser),
+        q.CreateIndex({
+          name: Indexes.isFeatureEnabledByUser,
+          source: q.Collection(Collections.flags),
+          terms: [
+            { field: ['data', 'feature'] },
+            { field: ['data', 'userCode'] },
+            { field: ['data', 'enabled'] },
+          ],
+        })
+      ),
+      IfNotExists(
+        q.Index(Indexes.flagsByFeature),
+        q.CreateIndex({
+          name: Indexes.flagsByFeature,
+          source: q.Collection(Collections.flags),
+          terms: [{ field: ['data', 'feature'] }],
+        })
+      ),
+      IfNotExists(
+        q.Index(Indexes.enabledFlagsByFeature),
+        q.CreateIndex({
+          name: Indexes.enabledFlagsByFeature,
+          source: q.Collection(Collections.flags),
+          terms: [
+            { field: ['data', 'feature'] },
+            { field: ['data', 'enabled'] },
+          ],
+        })
+      ),
+      IfNotExists(
+        q.Index(Indexes.userCodes),
+        q.CreateIndex({
+          name: Indexes.userCodes,
+          source: q.Collection(Collections.flags),
+          values: [{ field: ['data', 'userCode'] }],
+        })
       )
     )
   )

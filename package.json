@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "setup": "ts-node --project ./scripts/tsconfig.scripts.json ./scripts/setupDB.ts",
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest --runInBand",
     "test:setup": "NODE_ENV=test yarn setup"
   },
   "dependencies": {

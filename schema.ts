@@ -5,4 +5,9 @@ export enum Collections {
 
 export enum Indexes {
   featureByName = 'featureByName',
+  flag = 'flag',
+  isFeatureEnabledByUser = 'isFeatureEnabledByUser',
+  flagsByFeature = 'flagsByFeature',
+  enabledFlagsByFeature = 'enabledFlagsByFeature',
+  userCodes = 'userCodes',
 }

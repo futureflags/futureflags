@@ -30,5 +30,6 @@ jobs:
     - name: Run tests
       env:
         FAUNADB_ADMIN_SECRET: ${{ secrets.TEST_FAUNADB_ADMIN_SECRET }}
+        ADMIN_KEY: s3cr37
       with:
         cmd: yarn test
