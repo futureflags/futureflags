@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   test:
@@ -15,21 +15,19 @@ jobs:
         node-version: [13.8.0]
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Install packages
-      with:
-        cmd: yarn install
+      - name: Install packages
+        run: yarn install
 
-    - name: Setup test DB
-      env:
-        FAUNADB_ADMIN_SECRET: ${{ secrets.TEST_FAUNADB_ADMIN_SECRET }}
-      with:
-        cmd: yarn test:setup    
+      - name: Setup test DB
+        env:
+          FAUNADB_ADMIN_SECRET: ${{ secrets.TEST_FAUNADB_ADMIN_SECRET }}
+        run: yarn test:setup
 
-    - name: Run tests
-      env:
-        FAUNADB_ADMIN_SECRET: ${{ secrets.TEST_FAUNADB_ADMIN_SECRET }}
-        ADMIN_KEY: s3cr37
-      with:
-        cmd: yarn test
+      - name: Run tests
+        env:
+          FAUNADB_ADMIN_SECRET: ${{ secrets.TEST_FAUNADB_ADMIN_SECRET }}
+          ADMIN_KEY: s3cr37
+        run: yarn test
+          
