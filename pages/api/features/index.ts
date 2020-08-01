@@ -14,7 +14,7 @@ const onlyEmailCharacters = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/
 
 const newFeatureValidator = yup.object().shape({
   name: yup.string().matches(onlyEmailCharacters),
-  enabled: yup.bool().required(),
+  rate: yup.number().min(0).max(100).required(),
 })
 
 async function createFeatureEndpoint(

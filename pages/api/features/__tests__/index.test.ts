@@ -32,22 +32,22 @@ describe('POST /features', () => {
     expect(res.statusCode).toEqual(201)
     expect(res.jsonBody.feature.id).toEqual(expect.any(String))
     expect(res.jsonBody.feature.name).toEqual(feature.name)
-    expect(res.jsonBody.feature.enabled).toEqual(false)
+    expect(res.jsonBody.feature.rate).toEqual(0)
   })
 
-  test('enabled feature creation', async () => {
-    const feature = mountFeature({ enabled: true })
+  test('feature creation with rate', async () => {
+    const feature = mountFeature({ rate: 100 })
 
     const { res } = await callFeaturesPost(feature)
 
     expect(res.statusCode).toEqual(201)
     expect(res.jsonBody.feature.id).toEqual(expect.any(String))
     expect(res.jsonBody.feature.name).toEqual(feature.name)
-    expect(res.jsonBody.feature.enabled).toEqual(true)
+    expect(res.jsonBody.feature.rate).toEqual(100)
   })
 
   test('unique name validation', async () => {
-    const feature = mountFeature({ enabled: true })
+    const feature = mountFeature()
     await callFeaturesPost(feature)
 
     const { res } = await callFeaturesPost(feature)

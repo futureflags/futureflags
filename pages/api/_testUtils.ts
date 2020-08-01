@@ -79,7 +79,7 @@ export function mountFeature(
 ): NewFeatureData {
   return {
     name: faker.internet.domainWord(),
-    enabled: false,
+    rate: 0,
     ...data,
   }
 }

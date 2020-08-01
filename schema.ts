@@ -10,4 +10,9 @@ export enum Indexes {
   flagsByFeature = 'flagsByFeature',
   enabledFlagsByFeature = 'enabledFlagsByFeature',
   userCodes = 'userCodes',
+  featuresName = 'featuresName',
+}
+
+export enum Functions {
+  isFeatureEnabled = 'isFeatureEnabled',
 }

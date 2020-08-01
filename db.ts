@@ -1,5 +1,5 @@
 import { Client, values, query as q } from 'faunadb'
-import { Collections, Indexes } from './schema'
+import { Collections, Functions, Indexes } from './schema'
 
 export type Doc<T> = {
   ts: number
@@ -17,15 +17,10 @@ export type Model<T> = T & {
 
 export type Feature = {
   name: string
-  enabled: boolean
-  rate?: number
+  rate: number
 }
 
-export type NewFeatureData = {
-  name: Feature['name']
-  enabled?: Feature['enabled']
-  rate?: Feature['rate']
-}
+export type NewFeatureData = Feature
 
 export type Flag = {
   userCode: string
@@ -128,60 +123,41 @@ export async function isFeatureEnabled(
   client = connect()
 ) {
   return client.query<boolean>(
+    q.Call(Functions.isFeatureEnabled, { userCode, featureName })
+  )
+}
+
+export async function getFeaturesByUser(
+  userCode: Flag['userCode'],
+  client = connect()
+) {
+  const { featuresName, featuresEnabled } = await client.query<{
+    featuresName: Page<Feature['name']>
+    featuresEnabled: boolean[]
+  }>(
     q.Let(
       {
-        featureDoc: q.Get(q.Match(q.Index(Indexes.featureByName), featureName)),
-        isFeatureEnabled: q.Select(['data', 'enabled'], q.Var('featureDoc')),
-        existsRate: q.Contains(['data', 'rate'], q.Var('featureDoc')),
-        isFlagEnabled: q.Exists(
-          q.Match(q.Index(Indexes.isFeatureEnabledByUser), [
-            q.Select('ref', q.Var('featureDoc')),
-            userCode,
-            true,
-          ])
+        featuresName: q.Paginate(q.Match(q.Index(Indexes.featuresName))),
+        featuresEnabled: q.Map(
+          q.Select('data', q.Var('featuresName')),
+          (featureName) =>
+            q.Call(Functions.isFeatureEnabled, {
+              userCode,
+              featureName,
+            })
         ),
       },
-      q.Or(
-        q.Var('isFlagEnabled'),
-        q.And(q.Var('isFeatureEnabled'), q.Not(q.Var('existsRate'))),
-        q.If(
-          q.Var('existsRate'),
-          q.Let(
-            {
-              rateValue: q.Multiply(
-                q.Divide(
-                  q.Select(['data', 'rate'], q.Var('featureDoc')),
-                  q.ToDouble(100)
-                ),
-                q.Add(
-                  1,
-                  q.Count(q.Distinct(q.Match(q.Index(Indexes.userCodes))))
-                )
-              ),
-              currentValue: q.Add(
-                q.Count(
-                  q.Match(q.Index(Indexes.enabledFlagsByFeature), [
-                    q.Select('ref', q.Var('featureDoc')),
-                    true,
-                  ])
-                )
-              ),
-              shouldEnable: q.LT(q.Var('currentValue'), q.Var('rateValue')),
-            },
-            q.Do(
-              q.Create(q.Collection(Collections.flags), {
-                data: {
-                  userCode,
-                  feature: q.Select('ref', q.Var('featureDoc')),
-                  enabled: q.Var('shouldEnable'),
-                },
-              }),
-              q.Var('shouldEnable')
-            )
-          ),
-          false
-        )
-      )
+      {
+        featuresName: q.Var('featuresName'),
+        featuresEnabled: q.Var('featuresEnabled'),
+      }
     )
   )
+
+  return featuresName.data.reduce((newObj, name, index) => {
+    return {
+      ...newObj,
+      [name]: featuresEnabled[index],
+    }
+  }, {})
 }
