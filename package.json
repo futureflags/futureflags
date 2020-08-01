@@ -6,21 +6,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "setup": "ts-node --project ./scripts/tsconfig.scripts.json ./scripts/setupDB.ts",
+    "db:setup": "ts-node --project ./scripts/tsconfig.scripts.json ./scripts/setupDB.ts",
     "test": "NODE_ENV=test jest --runInBand",
-    "test:setup": "NODE_ENV=test yarn setup"
+    "test:api": "NODE_ENV=test jest --runInBand --config jest.api.config.js",
+    "test:api:setup": "NODE_ENV=test yarn db:setup",
+    "test:app": "NODE_ENV=test jest --runInBand --config jest.app.config.js"
   },
   "dependencies": {
+    "@chakra-ui/core": "^0.8.0",
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
     "@types/cors": "^2.8.6",
     "@types/faker": "^4.1.12",
     "@types/yup": "^0.29.3",
     "cors": "^2.8.5",
     "dotenv-flow": "^3.2.0",
+    "emotion-theming": "^10.0.27",
     "faker": "^4.1.0",
     "faunadb": "^2.14.2",
+    "formik": "^2.1.5",
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-query": "^2.5.10",
     "ts-jest": "^26.1.2",
     "typescript": "^3.9.7",
     "yup": "^0.29.1"
@@ -29,11 +37,15 @@
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@testing-library/react": "^10.4.7",
+    "@testing-library/user-event": "^12.1.0",
     "@types/jest": "^26.0.4",
     "@types/node": "^14.0.23",
     "@types/react": "^16.9.43",
-    "babel-jest": "^26.1.0",
+    "babel-jest": "^26.2.2",
     "jest": "^26.1.0",
+    "jest-fetch-mock": "^3.0.3",
+    "nock": "^13.0.3",
     "ts-node": "^8.10.2"
   }
 }

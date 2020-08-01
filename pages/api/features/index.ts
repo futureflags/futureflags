@@ -7,7 +7,7 @@ import {
   NewFeatureData,
   getAllFeatures,
 } from '../../../db'
-import { controller, cors, NotFound } from '../_utils'
+import { controller, cors, NotFound, verifyAuth } from '../_utils'
 import * as yup from 'yup'
 
 const onlyEmailCharacters = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/
@@ -49,6 +49,7 @@ async function getFeaturesEndpoint(_req: NextApiRequest, res: NextApiResponse) {
 
 export default controller(async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res)
+  verifyAuth(req)
 
   if (req.method === 'POST') {
     await createFeatureEndpoint(req, res)

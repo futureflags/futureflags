@@ -20,10 +20,10 @@ jobs:
       - name: Install packages
         run: yarn install
 
-      - name: Setup test DB
+      - name: Setup API test
         env:
           FAUNADB_ADMIN_SECRET: ${{ secrets.TEST_FAUNADB_ADMIN_SECRET }}
-        run: yarn test:setup
+        run: yarn test:api:setup
 
       - name: Run tests
         env:

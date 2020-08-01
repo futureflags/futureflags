@@ -1,5 +1,3 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/scripts/setupTest.ts'],
+  projects: ['<rootDir>/jest.api.config.js', '<rootDir>/jest.app.config.js'],
 }
